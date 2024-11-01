@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Screens/RootScreen.dart'; // Import your root screen
+import 'Screens/login_register_screen.dart'; // Import the login/register screen
 
 void main() {
   runApp(MyApp());
@@ -11,7 +11,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'My App',
       theme: ThemeData(primarySwatch: Colors.deepPurple),
-      home: RootScreen(), // Use RootScreen as the main screen
+      home: LoginRegisterScreen(), // Start with the Login/Register screen
     );
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'Home/home.dart';
 import 'Profile/profile.dart';
-import 'Notifications/notification.dart';
 import 'Map/map_screen.dart';
 import 'Camera/camera_screen.dart';
 import 'Socials/socials_screen.dart';
