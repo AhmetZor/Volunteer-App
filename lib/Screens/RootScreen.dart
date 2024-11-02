@@ -16,7 +16,7 @@ class _RootScreenState extends State<RootScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
     CameraScreen(),
-    MapScreen(),
+    EventMap(),
     SocialsScreen(),
     ProfileScreen(),
   ];
@@ -29,7 +29,7 @@ class _RootScreenState extends State<RootScreen> {
     } else {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => MapScreen()), // Open Map screen
+        MaterialPageRoute(builder: (context) => EventMap()), // Open Map screen
       );
     }
   }
