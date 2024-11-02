@@ -1,20 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Event Viewer Map',
-      home: EventMap(),
-    );
-  }
-}
-
 class EventMap extends StatefulWidget {
   @override
   _EventMapState createState() => _EventMapState();
@@ -23,16 +9,17 @@ class EventMap extends StatefulWidget {
 class _EventMapState extends State<EventMap> {
   late GoogleMapController mapController;
 
-  final Set<Marker> _markers = {
-    Marker(
-      markerId: MarkerId('event1'),
-      position: LatLng(40.7128, -74.0060), // Example coordinates
-      infoWindow: InfoWindow(title: 'Event 1', snippet: 'Details about Event 1'),
-    ),
-  };
+  final Set<Marker> _markers = {};
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+
+    // Add markers for your events
+    _markers.add(Marker(
+      markerId: MarkerId('event1'),
+      position: LatLng(40.7128, -74.0060), // Example coordinates
+      infoWindow: InfoWindow(title: 'Event 1', snippet: 'Details about Event 1'),
+    ));
   }
 
   @override
