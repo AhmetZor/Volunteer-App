@@ -28,6 +28,8 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  barcode_scan2: ^4.3.3
+  camera: ^0.11.0+2
   path_provider: ^2.1.5
   firebase_storage: ^12.3.4
   image_picker: ^1.1.2
