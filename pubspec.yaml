@@ -38,6 +38,7 @@ dependencies:
   firebase_auth: ^5.3.1
   firebase_core: ^3.6.0
   google_maps_flutter: ^2.9.0
+  carousel_slider: ^5.0.0
   geolocator:
   image:
   floating_bottom_bar:
