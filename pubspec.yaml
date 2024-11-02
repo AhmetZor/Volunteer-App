@@ -79,6 +79,12 @@ flutter:
      - lib/assets/images/logo.png
      - lib/assets/images/Maps.png
      - lib/assets/videos/LoopAnimation.mp4
+     - lib/assets/images/badges/doyourfirstgreen.png
+     - lib/assets/images/badges/fiveanimalshelter.png
+     - lib/assets/images/badges/tengreenjob.png
+     - lib/assets/images/badges/ThreeJob.png
+     - lib/assets/images/badges/threejobinarow.png
+     - lib/assets/images/badges/YourFirstJob.png
 
 
   # An image asset can refer to one or more resolution-specific "variants", see
