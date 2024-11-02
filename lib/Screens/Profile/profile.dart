@@ -5,7 +5,8 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: Image.asset('lib/assets/images/hands.png', width: 80, alignment: Alignment.center,),
+        centerTitle: true,
       ),
       body: Center(
         child: Text('Profile Screen', style: TextStyle(fontSize: 24)),

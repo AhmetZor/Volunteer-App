@@ -5,7 +5,7 @@ class NotificationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notifications'),
+        title: Image.asset('lib/assets/images/hands.png', width: 80),
       ),
       body: Center(
         child: Text('Notification Screen', style: TextStyle(fontSize: 24)),
