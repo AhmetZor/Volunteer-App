@@ -1,6 +1,8 @@
+import 'package:floating_bottom_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import '../../Constant/colors.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   // Mock data to simulate volunteer opportunities
   final List<Map<String, String>> volunteerOpportunities = [
     {
@@ -46,6 +48,26 @@ class HomeScreen extends StatelessWidget {
   ];
 
   @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late List<bool> _attendedList;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the attended list based on the number of opportunities
+    _attendedList = List.generate(widget.volunteerOpportunities.length, (_) => false);
+  }
+
+  void _toggleAttendance(int index) {
+    setState(() {
+      _attendedList[index] = !_attendedList[index]; // Toggle attendance status
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -57,10 +79,14 @@ class HomeScreen extends StatelessWidget {
       ),
       body: ListView.builder(
         padding: EdgeInsets.symmetric(vertical: 10.0),
-        itemCount: volunteerOpportunities.length,
+        itemCount: widget.volunteerOpportunities.length,
         itemBuilder: (context, index) {
-          final opportunity = volunteerOpportunities[index];
-          return VolunteerOpportunityCard(data: opportunity);
+          final opportunity = widget.volunteerOpportunities[index];
+          return VolunteerOpportunityCard(
+            data: opportunity,
+            isAttended: _attendedList[index],
+            onAttendanceChanged: () => _toggleAttendance(index),
+          );
         },
       ),
       backgroundColor: Colors.grey[100],
@@ -70,8 +96,14 @@ class HomeScreen extends StatelessWidget {
 
 class VolunteerOpportunityCard extends StatefulWidget {
   final Map<String, String> data;
+  final bool isAttended; // Attendance state from parent
+  final VoidCallback onAttendanceChanged; // Callback for attendance change
 
-  VolunteerOpportunityCard({required this.data});
+  VolunteerOpportunityCard({
+    required this.data,
+    required this.isAttended,
+    required this.onAttendanceChanged,
+  });
 
   @override
   _VolunteerOpportunityCardState createState() => _VolunteerOpportunityCardState();
@@ -88,7 +120,9 @@ class _VolunteerOpportunityCardState extends State<VolunteerOpportunityCard> {
           _isExpanded = !_isExpanded; // Toggle expansion state
         });
       },
-      child: Container(
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300), // Animation duration
+        curve: Curves.easeInOut, // Animation curve
         margin: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0),
@@ -108,7 +142,6 @@ class _VolunteerOpportunityCardState extends State<VolunteerOpportunityCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Display volunteer work image with the specified URL
             ClipRRect(
               borderRadius: BorderRadius.vertical(top: Radius.circular(15.0)),
               child: Image.network(
@@ -142,7 +175,6 @@ class _VolunteerOpportunityCardState extends State<VolunteerOpportunityCard> {
                   ),
                   SizedBox(height: 12),
                   Divider(color: Colors.grey[300]),
-                  // Show additional details when expanded
                   if (_isExpanded) ...[
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 12.0),
@@ -158,67 +190,27 @@ class _VolunteerOpportunityCardState extends State<VolunteerOpportunityCard> {
                           Text('Place: ${widget.data['place'] ?? 'N/A'}', style: TextStyle(fontSize: 14)),
                           SizedBox(height: 8),
                           Text('Quota: ${widget.data['quota'] ?? 'N/A'}', style: TextStyle(fontSize: 14)),
-                          SizedBox(height: 12),
                         ],
                       ),
                     ),
                   ],
-                  SizedBox(height: 12),
-                  // Action buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      _ActionButton(
-                        icon: Icons.check_circle_outline,
-                        label: 'Attend',
-                        onTap: () {
-                          // Logic to attend the volunteer opportunity
-                        },
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 12.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        widget.onAttendanceChanged(); // Call the attendance change function
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: widget.isAttended ? Colors.green : Colors.orange, // Button color based on attendance
+                        padding: EdgeInsets.symmetric(vertical: 12.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
                       ),
-                      _ActionButton(
-                        icon: Icons.share_outlined,
-                        label: 'Share',
-                        onTap: () {
-                          // Logic to share the opportunity
-                        },
-                      ),
-                    ],
+                      child: Text(widget.isAttended ? 'Attended' : 'Attend', style: TextStyle(color: Colors.white)),
+                    ),
                   ),
                 ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// Custom widget for action buttons
-class _ActionButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  _ActionButton({required this.icon, required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(8.0),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.grey[700], size: 22),
-            SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(
-                color: Colors.grey[700],
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
               ),
             ),
           ],
