@@ -112,6 +112,7 @@ class VolunteerOpportunityCard extends StatefulWidget {
 class _VolunteerOpportunityCardState extends State<VolunteerOpportunityCard> {
   bool _isExpanded = false; // State variable for expansion
 
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -127,7 +128,7 @@ class _VolunteerOpportunityCardState extends State<VolunteerOpportunityCard> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0),
           gradient: LinearGradient(
-            colors: [Colors.white, Colors.grey[200]!],
+            colors: [Colors.white, _isExpanded ? Colors.orange[600]!.withOpacity(0.05) : Colors.grey[200]!],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -135,7 +136,7 @@ class _VolunteerOpportunityCardState extends State<VolunteerOpportunityCard> {
             BoxShadow(
               color: Colors.black.withOpacity(0.08),
               blurRadius: 20,
-              offset: Offset(0, 10),
+              offset: Offset(0, _isExpanded ? 100 : 0),
             ),
           ],
         ),
@@ -207,7 +208,20 @@ class _VolunteerOpportunityCardState extends State<VolunteerOpportunityCard> {
                           borderRadius: BorderRadius.circular(8.0),
                         ),
                       ),
-                      child: Text(widget.isAttended ? 'Attended' : 'Attend', style: TextStyle(color: Colors.white)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center, // Center the content
+                        children: [
+                          Icon(
+                            widget.isAttended ? Icons.check : Icons.add, // Change icon based on attendance
+                            color: Colors.white,
+                          ),
+                          SizedBox(width: 8), // Space between icon and text
+                          Text(
+                            widget.isAttended ? 'Attended' : 'Attend',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -219,3 +233,4 @@ class _VolunteerOpportunityCardState extends State<VolunteerOpportunityCard> {
     );
   }
 }
+
