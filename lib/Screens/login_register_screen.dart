@@ -84,12 +84,12 @@ class _LoginRegisterScreenState extends State<LoginRegisterScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        isLogin ? 'Volunteered' : 'Register',
+                        isLogin ? 'Welcome to Volunteered' : 'Register', textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
                           color: AppColors.orange,
-                          fontFamily: 'Euclid-Circular-A-Bold'
+                          fontFamily: 'Euclid-Circular-A-Bold',
                         ),
                       ),
                       SizedBox(height: 20),
