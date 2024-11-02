@@ -5,7 +5,7 @@ class SocialsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Image.asset('lib/assets/images/hands.png', width: 80),
+        title: Image.asset('lib/assets/images/hands.png', width: 81),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,
