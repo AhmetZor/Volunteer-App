@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math'; // Import to use Random
 
 class BadgesAchievementsScreen extends StatelessWidget {
   // Mock data for badges
@@ -60,7 +61,7 @@ class BadgesAchievementsScreen extends StatelessWidget {
   }
 }
 
-class BadgeCard extends StatelessWidget {
+class BadgeCard extends StatefulWidget {
   final String image;
   final String name;
   final String description;
@@ -68,51 +69,83 @@ class BadgeCard extends StatelessWidget {
   BadgeCard({required this.image, required this.name, required this.description});
 
   @override
+  _BadgeCardState createState() => _BadgeCardState();
+}
+
+class _BadgeCardState extends State<BadgeCard> {
+  String? randomDate;
+
+  void generateRandomDate() {
+    final random = Random();
+    final year = 2023 + random.nextInt(2); // Random year in 2023 or 2024
+    final month = 1 + random.nextInt(12); // Random month
+    final day = 1 + random.nextInt(28); // Random day (1-28)
+
+    setState(() {
+      randomDate = "$day/${month.toString().padLeft(2, '0')}/$year"; // Format as dd/mm/yyyy
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Container with BoxDecoration to add circular shadow
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.orangeAccent.withOpacity(0.15),
-                  spreadRadius: 1,
-                  blurRadius: 25,
-                  offset: Offset(0, 4), // changes position of shadow
+    return GestureDetector(
+      onTap: () {
+        if (randomDate == null) {
+          generateRandomDate(); // Generate date only if not already generated
+        }
+      },
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min, // Use min to avoid overflow
+          children: [
+            // Container with BoxDecoration to add circular shadow
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.orangeAccent.withOpacity(0.15),
+                    spreadRadius: 1,
+                    blurRadius: 25,
+                    offset: Offset(0, 4), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: ClipOval(
+                child: Image.asset(
+                  widget.image,
+                  height: 80, // Adjusted size
+                  width: 80, // Adjusted size
+                  fit: BoxFit.cover,
                 ),
-              ],
-            ),
-            child: ClipOval(
-              child: Image.asset(
-                image,
-                height: 100,
-                width: 100,
-                fit: BoxFit.cover,
               ),
             ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            name,
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 4),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              description,
-              style: TextStyle(color: Colors.grey[600]),
+            SizedBox(height: 8),
+            Text(
+              widget.name,
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold), // Adjusted font size
               textAlign: TextAlign.center,
             ),
-          ),
-        ],
+            SizedBox(height: 4),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                widget.description,
+                style: TextStyle(color: Colors.grey[600], fontSize: 12), // Adjusted font size
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(height: 8),
+            if (randomDate != null) // Display the random date if generated
+              Text(
+                "Date: $randomDate",
+                style: TextStyle(color: Colors.blue[700], fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+          ],
+        ),
       ),
     );
   }
