@@ -112,8 +112,8 @@ class ProfileScreen extends StatelessWidget {
 
         // Use the local image if available, otherwise fallback to network
         return Container(
-          width: 150, // Increased width
-          height: 150, // Increased height
+          width: 200, // Increased width
+          height: 200, // Increased height
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Colors.grey[200],
@@ -155,19 +155,21 @@ class ProfileScreen extends StatelessWidget {
       color: Colors.white,
       shadowColor: Colors.black.withOpacity(0.1),
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 0), // Add this line to adjust spacing above the title
             Text(
               isAssociation ? name : '$name $surname', // Adjust based on user type
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black87), // Increased font size
+              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: Colors.black87),
             ),
           ],
         ),
       ),
     );
   }
+
 
   Widget _buildProfileMenu(BuildContext context) {
     return Card(
@@ -178,7 +180,7 @@ class ProfileScreen extends StatelessWidget {
       color: Colors.white,
       shadowColor: Colors.black.withOpacity(0.1),
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.all(1.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -195,8 +197,31 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildMenuItem(BuildContext context, String title, IconData icon, Widget page) {
     return ListTile(
-      leading: Icon(icon, color: AppColors.orange, size: 30), // Increased icon size
-      title: Text(title, style: TextStyle(color: Colors.black87, fontSize: 20)), // Increased title font size
+      leading: Container(
+        decoration: BoxDecoration(
+          color: Colors.white, // Background color for the icon
+          shape: BoxShape.circle, // Circle shape for depth effect
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: Offset(0, 6), // Slight shadow offset
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0), // Padding around the icon
+          child: Icon(icon, color: AppColors.orange), // Your icon
+        ),
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          color: Colors.black87,
+          fontSize: 18,
+          fontWeight: FontWeight.bold, // Set title to bold
+        ),
+      ),
       onTap: () {
         Navigator.push(
           context,
@@ -205,6 +230,8 @@ class ProfileScreen extends StatelessWidget {
       },
     );
   }
+
+
 
   Widget _buildProfileContent(BuildContext context, String name, String surname, String userId, {bool isAssociation = false}) {
     return SingleChildScrollView(
