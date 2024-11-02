@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui'; // Import for ImageFilter
 import 'RootScreen.dart'; // Ensure this import is correct
+import '../Constant/colors.dart';
 
 class LoginRegisterScreen extends StatefulWidget {
   @override
@@ -64,7 +65,7 @@ class _LoginRegisterScreenState extends State<LoginRegisterScreen> {
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Apply blur
               child: Container(
-                color: Colors.black.withOpacity(0.5), // Dark overlay for contrast
+                color: AppColors.white.withOpacity(0.75), // Dark overlay for contrast
               ),
             ),
           ),
@@ -83,11 +84,12 @@ class _LoginRegisterScreenState extends State<LoginRegisterScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        isLogin ? 'Login' : 'Register',
+                        isLogin ? 'Volunteered' : 'Register',
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
-                          color: Colors.deepPurple,
+                          color: AppColors.orange,
+                          fontFamily: 'Euclid-Circular-A-Bold'
                         ),
                       ),
                       SizedBox(height: 20),
@@ -95,13 +97,13 @@ class _LoginRegisterScreenState extends State<LoginRegisterScreen> {
                         controller: emailController,
                         decoration: InputDecoration(
                           labelText: 'Email',
-                          labelStyle: TextStyle(color: Colors.deepPurple),
+                          labelStyle: TextStyle(color: AppColors.grey.withOpacity(0.4),fontFamily: "Euclid-Circular-A-Regular"),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.deepPurple),
+                            borderSide: BorderSide(color: AppColors.orange),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
+                            borderSide: BorderSide(color: Colors.grey.withOpacity(0.8)),
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
@@ -111,13 +113,13 @@ class _LoginRegisterScreenState extends State<LoginRegisterScreen> {
                         controller: passwordController,
                         decoration: InputDecoration(
                           labelText: 'Password',
-                          labelStyle: TextStyle(color: Colors.deepPurple),
+                          labelStyle: TextStyle(color: AppColors.grey.withOpacity(0.4),fontFamily: "Euclid-Circular-A-Regular"),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.deepPurple),
+                            borderSide: BorderSide(color: AppColors.orange),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
+                            borderSide: BorderSide(color: Colors.grey.withOpacity(0.8)),
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
@@ -131,11 +133,11 @@ class _LoginRegisterScreenState extends State<LoginRegisterScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          backgroundColor: Colors.deepPurple, // Button color
+                          backgroundColor: AppColors.orange, // Button color
                         ),
                         child: Text(
                           isLogin ? 'Login' : 'Register',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+                          style: TextStyle(fontSize: 18, color: Colors.white,fontFamily: 'Euclid Circular A'),
                         ),
                       ),
                       SizedBox(height: 20),
@@ -143,7 +145,7 @@ class _LoginRegisterScreenState extends State<LoginRegisterScreen> {
                         onPressed: toggleView,
                         child: Text(
                           isLogin ? 'Don\'t have an account? Register' : 'Already have an account? Login',
-                          style: TextStyle(color: Colors.deepPurple),
+                          style: TextStyle(color: AppColors.grey.withOpacity(0.65)),
                         ),
                       ),
                     ],

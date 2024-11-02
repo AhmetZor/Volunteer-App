@@ -25,7 +25,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Volunteer Opportunities', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Image.asset('lib/assets/images/hands.png', width: 80),
         backgroundColor: Colors.white,
         elevation: 0,
         centerTitle: true,

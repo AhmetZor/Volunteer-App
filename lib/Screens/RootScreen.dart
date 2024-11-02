@@ -4,6 +4,8 @@ import 'Profile/profile.dart';
 import 'Map/map_screen.dart';
 import 'Camera/camera_screen.dart';
 import 'Socials/socials_screen.dart';
+import '../Constant/colors.dart';
+import '../Constant/fonts.dart';
 
 class RootScreen extends StatefulWidget {
   @override
@@ -130,23 +132,24 @@ class CustomBottomNavBar extends StatelessWidget {
             height: isSelected ? 8 : 0,
             width: isSelected ? 8 : 0,
             decoration: BoxDecoration(
-              color: Colors.deepPurpleAccent,
+              color: AppColors.orange,
               shape: BoxShape.circle,
             ),
           ),
           SizedBox(height: 6), // Adjusted spacing
           Icon(
             icon,
-            color: isSelected ? Colors.deepPurpleAccent : Colors.grey[600],
+            color: isSelected ? AppColors.orange : Colors.grey[600],
             size: 28, // Increased icon size
           ),
           SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
-              color: isSelected ? Colors.deepPurpleAccent : Colors.grey[600],
+              color: isSelected ? AppColors.orange : Colors.grey[600],
               fontSize: 12,
               fontWeight: FontWeight.w600,
+              fontFamily: "Euclid Circular A Bold"
             ),
           ),
         ],
@@ -164,13 +167,13 @@ class CustomBottomNavBar extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: LinearGradient(
-              colors: [Colors.deepPurple, Colors.indigo],
+              colors: [AppColors.orange, Colors.orangeAccent],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.deepPurpleAccent.withOpacity(0.4),
+                color: AppColors.orange.withOpacity(0.4),
                 spreadRadius: 4,
                 blurRadius: 15,
                 offset: Offset(0, 4),
