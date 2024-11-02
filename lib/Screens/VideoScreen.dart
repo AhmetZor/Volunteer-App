@@ -46,13 +46,15 @@ class _VideoScreenState extends State<VideoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        // Directly show the video without a loading screen
-        child: AspectRatio(
-          aspectRatio: _controller.value.isInitialized
-              ? _controller.value.aspectRatio
-              : 16 / 9, // Default aspect ratio while loading
-          child: VideoPlayer(_controller),
+      body: Container(
+        color: Colors.white, // Add white background
+        child: Center(
+          child: AspectRatio(
+            aspectRatio: _controller.value.isInitialized
+                ? _controller.value.aspectRatio
+                : 10 / 10, // Default aspect ratio while loading
+            child: VideoPlayer(_controller),
+          ),
         ),
       ),
     );
