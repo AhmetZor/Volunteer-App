@@ -29,6 +29,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   google_maps_flutter: ^2.9.0
+  geolocator:
   floating_bottom_bar:
   flutter:
     sdk: flutter
