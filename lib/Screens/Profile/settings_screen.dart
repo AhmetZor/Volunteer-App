@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:path_provider/path_provider.dart'; // Import path_provider
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -12,9 +11,14 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseStorage _storage = FirebaseStorage.instance;
   final ImagePicker _picker = ImagePicker();
   File? _profileImage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLocalProfileImage(); // Load the profile image when the screen is initialized
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +34,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black),
       ),
-      body: FutureBuilder<User?>( // Use a FutureBuilder to get the current user
+      body: FutureBuilder<User?>(
         future: _getCurrentUser(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -59,6 +63,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Future<User?> _getCurrentUser() async {
     return _auth.currentUser; // Get the current authenticated user
+  }
+
+  void _loadLocalProfileImage() async {
+    final userId = _auth.currentUser?.uid;
+    if (userId != null) {
+      final Directory appDir = await getApplicationDocumentsDirectory();
+      final String imagePath = '${appDir.path}/$userId.jpg';
+
+      final File localImageFile = File(imagePath);
+      if (await localImageFile.exists()) {
+        setState(() {
+          _profileImage = localImageFile; // Load the local image into the state
+        });
+      }
+    }
   }
 
   Widget _buildProfilePicture() {
@@ -199,62 +218,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _profileImage = File(pickedFile.path);
         });
 
-        // Upload to Firebase Storage and get the download URL
-        String? downloadUrl = await _uploadImageToFirebase(_profileImage!);
-        if (downloadUrl != null) {
-          await _updateUserProfilePicture(downloadUrl);
-          showSnackbar(context, "Profile image updated.");
+        // Save to local storage
+        String localPath = await _saveImageLocally(_profileImage!, _auth.currentUser!.uid);
+        if (localPath.isNotEmpty) {
+          showSnackbar(context, "Profile Image Saved.");
         }
       }
     }
   }
 
-  Future<String?> _uploadImageToFirebase(File imageFile) async {
+  Future<String> _saveImageLocally(File imageFile, String userId) async {
     try {
-      String filePath = 'profile_pictures/${_auth.currentUser!.uid}.jpg'; // Unique path for each user
-      TaskSnapshot uploadTask = await _storage.ref(filePath).putFile(imageFile);
-      String downloadUrl = await uploadTask.ref.getDownloadURL(); // Get the download URL
-      return downloadUrl; // Return the URL
+      final Directory appDir = await getApplicationDocumentsDirectory();
+      final String imagePath = '${appDir.path}/$userId.jpg'; // Use user ID as filename
+      final File localImageFile = await imageFile.copy(imagePath);
+      return localImageFile.path; // Return local image path
     } catch (e) {
-      showSnackbar(context, "Error uploading image: ${e.toString()}");
-      return null;
+      showSnackbar(context, "Error Saving Image: ${e.toString()}");
+      return '';
     }
-  }
-
-  Future<void> _updateUserProfilePicture(String url) async {
-    User? user = _auth.currentUser;
-    if (user != null) {
-      String userType = await _getUserType(user.uid);
-      CollectionReference userCollection = FirebaseFirestore.instance.collection(userType);
-
-      // Check if document exists; create it if it does not
-      DocumentSnapshot userDoc = await userCollection.doc(user.uid).get();
-      if (!userDoc.exists) {
-        await userCollection.doc(user.uid).set({
-          'profilePicture': '', // Initialize with empty URL or any other default fields
-        });
-      }
-
-      // Update profile picture URL
-      await userCollection.doc(user.uid).update({
-        'profilePicture': url,
-      });
-    }
-  }
-
-  Future<String> _getUserType(String uid) async {
-    // Check which collection contains the user and return the correct type
-    DocumentSnapshot individualDoc = await FirebaseFirestore.instance.collection('individuals').doc(uid).get();
-    if (individualDoc.exists) {
-      return 'individuals';
-    }
-
-    DocumentSnapshot associationDoc = await FirebaseFirestore.instance.collection('associations').doc(uid).get();
-    if (associationDoc.exists) {
-      return 'associations';
-    }
-
-    throw Exception('User type not found');
   }
 
   void showSnackbar(BuildContext context, String message) {

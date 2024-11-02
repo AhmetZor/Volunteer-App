@@ -6,6 +6,8 @@ import 'loyalty_benefits_screen.dart';
 import 'membered_societies_screen.dart';
 import 'attended_events_screen.dart';
 import 'settings_screen.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart'; // Import path_provider
 
 class ProfileScreen extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -32,12 +34,7 @@ class ProfileScreen extends StatelessWidget {
         iconTheme: IconThemeData(color: Colors.black),
       ),
       body: FutureBuilder<DocumentSnapshot>(
-        future: _firestore.collection('individuals').doc(currentUser.uid).get().then((doc) {
-          if (!doc.exists) {
-            return _firestore.collection('associations').doc(currentUser.uid).get();
-          }
-          return doc;
-        }),
+        future: _firestore.collection('individuals').doc(currentUser.uid).get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -45,62 +42,109 @@ class ProfileScreen extends StatelessWidget {
           if (snapshot.hasError) {
             return Center(child: Text('Error loading profile: ${snapshot.error}'));
           }
-          if (!snapshot.hasData || !snapshot.data!.exists) {
-            return Center(child: Text('User not found'));
+
+          // Check if the individual document exists
+          if (snapshot.hasData && snapshot.data!.exists) {
+            var userData = snapshot.data!.data() as Map<String, dynamic>;
+            String name = userData['name'] ?? 'N/A';
+            String surname = userData['surname'] ?? 'N/A';
+
+            return _buildProfileContent(context, name, surname, currentUser.uid);
+          } else {
+            // If not found in individuals, check in associations
+            return FutureBuilder<DocumentSnapshot>(
+              future: _firestore.collection('associations').doc(currentUser.uid).get(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error loading profile: ${snapshot.error}'));
+                }
+
+                // Check if the association document exists
+                if (snapshot.hasData && snapshot.data!.exists) {
+                  var userData = snapshot.data!.data() as Map<String, dynamic>;
+                  String associationName = userData['associationName'] ?? 'N/A';
+                  String email = userData['email'] ?? 'N/A';
+
+                  return _buildProfileContent(
+                    context,
+                    associationName,
+                    email,
+                    currentUser.uid,
+                    isAssociation: true, // Flag to indicate that this is an association
+                  );
+                } else {
+                  return Center(child: Text('User not found'));
+                }
+              },
+            );
           }
-
-          var userData = snapshot.data!.data() as Map<String, dynamic>;
-          String name = userData['name'] ?? 'N/A';
-          String surname = userData['surname'] ?? 'N/A';
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                _buildProfilePicture(userData['profilePicture']),
-                SizedBox(height: 20),
-                _buildUserInfo(name, surname),
-                SizedBox(height: 20),
-                Divider(thickness: 2, color: Colors.grey[300]),
-                SizedBox(height: 20),
-                _buildProfileMenu(context),
-              ],
-            ),
-          );
         },
       ),
       backgroundColor: Colors.white,
     );
   }
 
-  Widget _buildProfilePicture(String? profilePicture) {
-    return Container(
-      width: 120,
-      height: 120,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.grey[200],
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 15,
-            offset: Offset(0, 5),
-          ),
-        ],
-      ),
-      child: ClipOval(
-        child: Image.network(
-          profilePicture ?? 'https://via.placeholder.com/150',
+  Future<File?> _getLocalProfilePicture(String userId) async {
+    try {
+      final Directory appDir = await getApplicationDocumentsDirectory();
+      final String imagePath = '${appDir.path}/$userId.jpg'; // Use user ID as filename
+      final File localImageFile = File(imagePath);
+      if (await localImageFile.exists()) {
+        return localImageFile; // Return the local image file if it exists
+      }
+    } catch (e) {
+      // Handle any exceptions
+    }
+    return null; // Return null if no file is found
+  }
+
+  Widget _buildProfilePicture(String userId) {
+    return FutureBuilder<File?>(
+      future: _getLocalProfilePicture(userId), // Fetch the local image
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator(); // Show loader while fetching
+        }
+
+        // Use the local image if available, otherwise fallback to network
+        return Container(
           width: 120,
           height: 120,
-          fit: BoxFit.cover,
-        ),
-      ),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.grey[200],
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 15,
+                offset: Offset(0, 5),
+              ),
+            ],
+          ),
+          child: ClipOval(
+            child: snapshot.data != null
+                ? Image.file(
+              snapshot.data!,
+              width: 120,
+              height: 120,
+              fit: BoxFit.cover,
+            )
+                : Image.network(
+              'https://via.placeholder.com/150', // Fallback placeholder
+              width: 120,
+              height: 120,
+              fit: BoxFit.cover,
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildUserInfo(String name, String surname) {
+  Widget _buildUserInfo(String name, String surname, {bool isAssociation = false}) {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(
@@ -114,7 +158,7 @@ class ProfileScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '$name $surname',
+              isAssociation ? name : '$name $surname', // Adjust based on user type
               style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black87),
             ),
           ],
@@ -157,6 +201,24 @@ class ProfileScreen extends StatelessWidget {
           MaterialPageRoute(builder: (context) => page),
         );
       },
+    );
+  }
+
+  Widget _buildProfileContent(BuildContext context, String name, String surname, String userId, {bool isAssociation = false}) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _buildProfilePicture(userId),
+          SizedBox(height: 20),
+          _buildUserInfo(name, isAssociation ? '' : surname, isAssociation: isAssociation), // Adjust user info display
+          SizedBox(height: 20),
+          Divider(thickness: 2, color: Colors.grey[300]),
+          SizedBox(height: 20),
+          _buildProfileMenu(context),
+        ],
+      ),
     );
   }
 }
