@@ -55,8 +55,8 @@ class _EventMapState extends State<EventMap> {
   }
 
   void _addMockEventMarkers(LatLng userLocation) {
-    int numberOfEvents = 5;
-    double maxDistanceInMeters = 500; // max radius for random markers
+    int numberOfEvents = 10;
+    double maxDistanceInMeters = 2000; // max radius for random markers
 
     for (int i = 0; i < numberOfEvents; i++) {
       LatLng randomPosition = _generateRandomLocation(userLocation, maxDistanceInMeters);
@@ -91,7 +91,7 @@ class _EventMapState extends State<EventMap> {
 
     // Decode the image and resize it
     img.Image originalImage = img.decodeImage(imageData)!;
-    img.Image resizedImage = img.copyResize(originalImage, width: 120); // Resize to desired width
+    img.Image resizedImage = img.copyResize(originalImage, width: 130); // Resize to desired width
 
     // Convert the resized image back to Uint8List
     Uint8List resizedImageData = Uint8List.fromList(img.encodePng(resizedImage));

@@ -8,6 +8,7 @@ import 'attended_events_screen.dart';
 import 'settings_screen.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart'; // Import path_provider
+import '../../Constant/colors.dart';
 
 class ProfileScreen extends StatelessWidget {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -111,8 +112,8 @@ class ProfileScreen extends StatelessWidget {
 
         // Use the local image if available, otherwise fallback to network
         return Container(
-          width: 120,
-          height: 120,
+          width: 150, // Increased width
+          height: 150, // Increased height
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Colors.grey[200],
@@ -128,14 +129,14 @@ class ProfileScreen extends StatelessWidget {
             child: snapshot.data != null
                 ? Image.file(
               snapshot.data!,
-              width: 120,
-              height: 120,
+              width: 150, // Increased width
+              height: 150, // Increased height
               fit: BoxFit.cover,
             )
                 : Image.network(
               'https://via.placeholder.com/150', // Fallback placeholder
-              width: 120,
-              height: 120,
+              width: 150, // Increased width
+              height: 150, // Increased height
               fit: BoxFit.cover,
             ),
           ),
@@ -143,6 +144,7 @@ class ProfileScreen extends StatelessWidget {
       },
     );
   }
+
 
   Widget _buildUserInfo(String name, String surname, {bool isAssociation = false}) {
     return Card(
@@ -159,7 +161,7 @@ class ProfileScreen extends StatelessWidget {
           children: [
             Text(
               isAssociation ? name : '$name $surname', // Adjust based on user type
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black87),
+              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.black87), // Increased font size
             ),
           ],
         ),
@@ -193,8 +195,8 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildMenuItem(BuildContext context, String title, IconData icon, Widget page) {
     return ListTile(
-      leading: Icon(icon, color: Colors.teal[600]),
-      title: Text(title, style: TextStyle(color: Colors.black87, fontSize: 18)),
+      leading: Icon(icon, color: AppColors.orange, size: 30), // Increased icon size
+      title: Text(title, style: TextStyle(color: Colors.black87, fontSize: 20)), // Increased title font size
       onTap: () {
         Navigator.push(
           context,
