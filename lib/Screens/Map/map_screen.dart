@@ -21,18 +21,7 @@ class _EventMapState extends State<EventMap> {
   final List<Marker> _allMarkers = [];
   late Position currentPosition;
 
-  final List<String> eventNames = [
-    "Beach Cleanup",
-    "Tree Planting",
-    "Park Beautification",
-    "Community Gardening",
-    "Animal Shelter Volunteering",
-    "Food Bank Assistance",
-    "Recycling Drive",
-    "Youth Mentorship",
-    "School Supply Drive",
-    "Neighborhood Litter Patrol"
-  ];
+
 
   String _searchQuery = "";
   bool _isSearchVisible = false; // State variable for search visibility
@@ -87,11 +76,6 @@ class _EventMapState extends State<EventMap> {
 
 
 
-
-
-
-
-
   Future<BitmapDescriptor> _getMarkerIcon() async {
     final byteData = await rootBundle.load('lib/assets/images/Maps.png');
     final Uint8List imageData = byteData.buffer.asUint8List();
@@ -103,18 +87,6 @@ class _EventMapState extends State<EventMap> {
     return BitmapDescriptor.fromBytes(resizedImageData);
   }
 
-  void _addMockEventMarkers(LatLng userLocation) {
-    int numberOfEvents = 10;
-    double maxDistanceInMeters = 2000;
-
-    for (int i = 0; i < numberOfEvents; i++) {
-      LatLng randomPosition = _generateRandomLocation(userLocation, maxDistanceInMeters);
-      String eventName = eventNames[i % eventNames.length];
-      double distance = _calculateDistance(userLocation, randomPosition) / 1000; // Convert to kilometers
-
-      //_addMarker(randomPosition, eventName, 'Join us for $eventName\nDistance: ${distance.toStringAsFixed(2)} km'); // Update the unit to km
-    }
-  }
 
   Future<void> _addMarker(LatLng location, String title, String description, DateTime date, TimeOfDay time, int quota) async {
     final User? user = FirebaseAuth.instance.currentUser; // Get the current user
@@ -181,19 +153,6 @@ class _EventMapState extends State<EventMap> {
     return Geolocator.distanceBetween(from.latitude, from.longitude, to.latitude, to.longitude);
   }
 
-  LatLng _generateRandomLocation(LatLng location, double distance) {
-    final random = Random();
-    double radiusInDegrees = distance / 111320;
-
-    double u = random.nextDouble();
-    double v = random.nextDouble();
-    double w = radiusInDegrees * sqrt(u);
-    double t = 2 * pi * v;
-    double newLat = location.latitude + w * cos(t);
-    double newLng = location.longitude + w * sin(t) / cos(location.latitude * pi / 180);
-
-    return LatLng(newLat, newLng);
-  }
 
   void _showEventDetails(String title, String snippet, LatLng location, DateTime dateTime) {
     showModalBottomSheet(
