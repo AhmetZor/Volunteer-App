@@ -1,4 +1,5 @@
 
+![Çalışma Yüzeyi 4](https://github.com/user-attachments/assets/772aa6c2-6f91-46bc-85f1-999b9143aaaf)
 # Volunteered 🌍
 
 **Volunteered** is a community-driven mobile app that connects individuals with meaningful volunteering opportunities around them. Designed for both seasoned volunteers and newcomers, Volunteered helps users find activities, contribute to causes, and track their impact in a fun and engaging way.
